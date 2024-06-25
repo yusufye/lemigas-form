@@ -21,6 +21,8 @@ use Filament\Tables\Columns\ViewColumn;
 use Illuminate\Validation\Rules\Unique;
 use Filament\Forms\Components\TextInput;
 use Filament\Tables\Columns\BadgeColumn;
+use Filament\Tables\Enums\FiltersLayout;
+use Filament\Tables\Columns\ToggleColumn;
 use Filament\Tables\Filters\SelectFilter;
 use Illuminate\Database\Eloquent\Builder;
 use Filament\Infolists\Components\ViewEntry;
@@ -71,24 +73,25 @@ class CodeResource extends Resource
                 ->label('Submitted At')
                 ->sortable()
                 ->dateTime(),
-                IconColumn::make('is_active')
+                ToggleColumn::make('is_active')
                 ->label('Active')
                 ->sortable()
-                ->boolean()
-                ->trueIcon('heroicon-o-check-badge')
-                ->falseIcon('heroicon-o-x-mark'),
+                ->visible(auth()->user()->hasRole('super_admin'))
             ])
             ->defaultSort('created_at', 'desc')
             ->modifyQueryUsing(function (Builder $query) {
                 if (auth()->user()->hasRole('Admin')) {
-                    return $query->where('created_by', auth()->id());
+                    return $query->where(['created_by'=>auth()->id(),'is_active'=>1]);
                 }
             })
             ->filters([
-                SelectFilter::make('user_created') ->relationship('user_created', 'name'),
-                DateRangeFilter::make('publicForm.submitted_at'),
-
-            ])
+                SelectFilter::make('user_created') 
+                ->relationship('user_created', 'name')
+                ->label('User')
+                ->visible(auth()->user()->hasRole('super_admin')),
+                DateRangeFilter::make('publicForm.submitted_at')
+                ->label('Submit Date')
+            ],layout: FiltersLayout::AboveContentCollapsible)
             ->actions([
                 // Tables\Actions\EditAction::make(),
                 // ViewAction::make(),
