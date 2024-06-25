@@ -17,7 +17,7 @@ use App\Http\Controllers\PublicFormController;
 */
 
 Route::get('/', function () {
-    return view('welcome');
+    return redirect()->route('filament.admin.auth.login');
 });
 
 Route::get('/public/{encryptedId}', [CodeController::class, 'show'])->name('public-form');
