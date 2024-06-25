@@ -8,6 +8,7 @@ use App\Models\User;
 use Filament\Tables;
 use Filament\Forms\Form;
 use Filament\Tables\Table;
+use Illuminate\Support\Carbon;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Filament\Infolists\Infolist;
 use Filament\Resources\Resource;
@@ -57,6 +58,7 @@ class CodeResource extends Resource
     {
         // $url=$record->code;
         return $table
+            ->defaultPaginationPageOption(25)
             ->columns([
                 TextColumn::make('code')
                 ->label('Code')
@@ -89,8 +91,16 @@ class CodeResource extends Resource
                 ->relationship('user_created', 'name')
                 ->label('User')
                 ->visible(auth()->user()->hasRole('super_admin')),
-                DateRangeFilter::make('publicForm.submitted_at')
-                ->label('Submit Date')
+                // DateRangeFilter::make('publicForm.submitted_at') ->label('Submit Date'),
+                DateRangeFilter::make('publicForm')
+                ->modifyQueryUsing(function (Builder $query, ?Carbon $startDate, ?Carbon $endDate, $dateString) {
+                    return $query->when(!empty($dateString), function (Builder $query) use ($startDate, $endDate) {
+                        return $query->whereHas('publicForm', function (Builder $query) use ($startDate, $endDate) {
+                            $query->whereBetween('submitted_at', [$startDate, $endDate]);
+                        });
+                    });
+                })
+
             ],layout: FiltersLayout::AboveContentCollapsible)
             ->actions([
                 // Tables\Actions\EditAction::make(),
