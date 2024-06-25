@@ -76,41 +76,43 @@ class ListCodes extends ListRecords
         $data_korupsi[]=Column::make('publicForm.remark')->heading('Catatan dan komentar');
         $data_korupsi[]=Column::make('publicForm.submitted_at')->heading('Tanggal form disimpan');
 
-
-
+        
         return [
             Actions\CreateAction::make(),
             ExportAction::make()
             ->exports([
                 ExcelExport::make('Kepentingan')
                     ->fromTable()
+                    ->except([ 'is_active', 'user'])
                     ->modifyQueryUsing(fn ($query) => $query->where('is_active', true)
                         ->whereHas('publicForm', function ($query) {
                             $query->whereNotNull('submitted_at');
                         })
                     )
-                    ->withFilename(fn ($resource) => $resource::getModelLabel() . '_kepentingan_' . date('Y-m-d'))
-                    ->withWriterType(\Maatwebsite\Excel\Excel::CSV)
+                    ->withFilename(fn ($resource) =>  'form_kepentingan_' . date('dMY_His'))
+                    // ->withWriterType(\Maatwebsite\Excel\Excel::CSV)
                     ->withColumns($data_kepentingan),
                 ExcelExport::make('Kepuasan')
                     ->fromTable()
+                    ->except([ 'is_active', 'user'])
                     ->modifyQueryUsing(fn ($query) => $query->where('is_active', true)
                         ->whereHas('publicForm', function ($query) {
                             $query->whereNotNull('submitted_at');
                         })
                     )
-                    ->withFilename(fn ($resource) => $resource::getModelLabel() . '_kepuasan_' . date('Y-m-d'))
-                    ->withWriterType(\Maatwebsite\Excel\Excel::CSV)
+                    ->withFilename(fn ($resource) =>  'form_kepuasan_' . date('dMY_His'))
+                    // ->withWriterType(\Maatwebsite\Excel\Excel::CSV)
                     ->withColumns($data_kepuasan),
                 ExcelExport::make('Korupsi')
                     ->fromTable()
+                    ->except([ 'is_active', 'user'])
                     ->modifyQueryUsing(fn ($query) => $query->where('is_active', true)
                         ->whereHas('publicForm', function ($query) {
                             $query->whereNotNull('submitted_at');
                         })
                     )
-                    ->withFilename(fn ($resource) => $resource::getModelLabel() . '_korupsi_' . date('Y-m-d'))
-                    ->withWriterType(\Maatwebsite\Excel\Excel::CSV)
+                    ->withFilename(fn ($resource) =>  'form_korupsi_' . date('dMY_His'))
+                    // ->withWriterType(\Maatwebsite\Excel\Excel::CSV)
                     ->withColumns($data_korupsi),
 
                 
