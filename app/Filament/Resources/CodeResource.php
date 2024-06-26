@@ -109,6 +109,8 @@ class CodeResource extends Resource
                     ->icon('heroicon-o-document-arrow-down')
                     ->url(fn (Code $record) => route('pdf', $record))
                     ->openUrlInNewTab()
+                    ->visible(fn ($record) => $record->publicForm && $record->publicForm->submitted_at)
+
             ])
             ->bulkActions([
             ]);

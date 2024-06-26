@@ -8,10 +8,10 @@ use Barryvdh\DomPDF\Facade\Pdf;
 
 class PdfController extends Controller
 {
-    public function __invoke(Code $order)
+    public function __invoke(Code $code)
     {
         // ini_set('max_execution_time', 300);
-        return Pdf::loadView('pdf', ['record' => $order])
-            ->download('dawd.pdf');
+        return Pdf::loadView('pdf', ['record' => $code])
+            ->download($code->code.'_'.date('Ymd_His').'.pdf');
     }
 }
