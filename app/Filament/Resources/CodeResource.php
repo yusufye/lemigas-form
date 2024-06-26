@@ -56,6 +56,7 @@ class CodeResource extends Resource
 
     public static function table(Table $table): Table
     {
+        
         // $url=$record->code;
         return $table
             ->defaultPaginationPageOption(25)
@@ -91,7 +92,6 @@ class CodeResource extends Resource
                 ->relationship('user_created', 'name')
                 ->label('User')
                 ->visible(auth()->user()->hasRole('super_admin')),
-                // DateRangeFilter::make('publicForm.submitted_at') ->label('Submit Date'),
                 DateRangeFilter::make('publicForm')
                 ->modifyQueryUsing(function (Builder $query, ?Carbon $startDate, ?Carbon $endDate, $dateString) {
                     return $query->when(!empty($dateString), function (Builder $query) use ($startDate, $endDate) {
@@ -103,36 +103,14 @@ class CodeResource extends Resource
 
             ],layout: FiltersLayout::AboveContentCollapsible)
             ->actions([
-                // Tables\Actions\EditAction::make(),
-                // ViewAction::make(),
-                Tables\Actions\Action::make('pdf')
-                    ->label('PDF')
-                    ->color('success')
-                    ->visible(fn ($record) => $record->publicForm->submitted_at)
-                    ->action(function (Code $record) {
-                        $record->load('publicForm'); // Eager load relasi forms
-                        $pdf = Pdf::loadView('pdf', ['record' => $record]);
-                        return response()->streamDownload(function () use ($pdf) {
-                            echo $pdf->output();
-                        }, $record->code . '.pdf', [
-                            'Content-Type' => 'application/pdf',
-                            'Content-Disposition' => 'attachment; filename="' . $record->code . '.pdf"',
-                        ]);
-                    })
-                    ->visible(fn ($record) => $record->publicForm && $record->publicForm->submitted_at)
-                    
-                    
-                // ->mutateRecordDataUsing(function (array $data): array {
-                //     $data['code'] = url(md5($data['code']));
-            
-                //     return $data;
-                // })
-                
+                    Tables\Actions\Action::make('pdf')
+                    ->iconButton()
+                    ->tooltip('Download pdf')
+                    ->icon('heroicon-o-document-arrow-down')
+                    ->url(fn (Code $record) => route('pdf', $record))
+                    ->openUrlInNewTab()
             ])
             ->bulkActions([
-                // Tables\Actions\BulkActionGroup::make([
-                //     Tables\Actions\DeleteBulkAction::make(),
-                // ]),
             ]);
     }
 

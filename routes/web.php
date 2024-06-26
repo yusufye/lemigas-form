@@ -2,6 +2,7 @@
 
 use App\Models\Code;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\PdfController;
 use App\Http\Controllers\CodeController;
 use App\Http\Controllers\PublicFormController;
 
@@ -22,3 +23,4 @@ Route::get('/', function () {
 
 Route::get('/public/{encryptedId}', [CodeController::class, 'show'])->name('public-form');
 Route::post('/public/submit/{code_id}', [PublicFormController::class, 'store'])->name('submit-public-form');
+Route::get('pdf/{order}', PdfController::class)->name('pdf'); 

@@ -183,6 +183,7 @@
     <p>Saran dan Komentar:{{$record->publicForm->remark}}</p>
     <p class="right" style="padding-right:120px;">Jakarta, {{date('d M Y',strtotime($record->publicForm->submitted_at))}}</p>
     <p class="right" style="padding-right:150px;padding-bottom: 20px;">Pelanggan</p>
+    <p class="right" style="padding-right:120px;"><img src="{{public_path('storage/'.$record->publicForm->signature_path)}}" alt="" style="max-width: 100px;"></p>
     <p class="right" style="padding-right:100px;">(___________________________)</p>
 
     <div class="footer">
