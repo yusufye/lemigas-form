@@ -44,7 +44,12 @@ class PublicForm extends Model
         'remark',
         'submitted_at',
         'signature_path',
-        'code_id'
+        'code_id',
+        'jenis_pelayanan',
+        'responden_age',
+        'responden_gender',
+        'responden_education',
+        'complaint',
     ];
 
     public function code(): BelongsTo

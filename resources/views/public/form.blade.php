@@ -57,7 +57,14 @@
             2=>'Kurang Puas',
             3=>'Puas',
             4=>'Sangat Puas'
-];
+        ];
+
+        $radio_label_korupsi=[
+            1=>'Tidak Sesuai',
+            2=>'Kurang Sesuai',
+            3=>'Sesuai',
+            4=>'Sangat Sesuai'
+        ];
     @endphp 
     <div class="container mt-5">
         <div class="row justify-content-center">
@@ -112,6 +119,48 @@
                                 <label for="company_phone" class="form-label required-label">Telepon/Fax</label>
                                 <input type="tel" class="form-control" id="company_phone" name="company_phone" placeholder="Enter company phone/fax" value="{{ old('company_phone') ?? (isset($form['company_phone']) ? $form['company_phone'] : '') }}" required>
                                 @error('company_phone')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                            </div>
+
+                            <div class="mb-3 p-2">
+                                <label for="jenis_pelayanan" class="form-label required-label">Jenis Pelayanan</label>
+                                <select name="jenis_pelayanan" id="jenis_pelayanan" class="form-select">
+                                    <option {{ old('jenis_pelayanan') ?? (isset($form['jenis_pelayanan']) && $form['jenis_pelayanan']=='UJI_LAB' ? 'selected' : '') }} value="UJI_LAB" >Uji Lab</option>
+                                    <option {{ old('jenis_pelayanan') ?? (isset($form['jenis_pelayanan']) && $form['jenis_pelayanan']=='TENAGA_AHLI' ? 'selected' : '') }} value="TENAGA_AHLI">Tenaga Ahli</option>
+                                    <option {{ old('jenis_pelayanan') ?? (isset($form['jenis_pelayanan']) && $form['jenis_pelayanan']=='JASA_STUDI' ? 'selected' : '') }} value="JASA_STUDI">Jasa Studi</option>
+                                    <option {{ old('jenis_pelayanan') ?? (isset($form['jenis_pelayanan']) && $form['jenis_pelayanan']=='PENYEWAAN_ALAT' ? 'selected' : '') }} value="PENYEWAAN_ALAT">Penyewaan Alat</option>
+                                    <option {{ old('jenis_pelayanan') ?? (isset($form['jenis_pelayanan']) && $form['jenis_pelayanan']=='JASA_BLENDING' ? 'selected' : '') }} value="JASA_BLENDING">Jasa Blending</option>
+                                    <option {{ old('jenis_pelayanan') ?? (isset($form['jenis_pelayanan']) && $form['jenis_pelayanan']=='JASA_SERTIFIKASI_PRODUK' ? 'selected' : '') }} value="JASA_SERTIFIKASI_PRODUK">Sasa Sertifikasi Produk</option>
+                                </select>
+                                @error('jenis_pelayanan')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                            </div>
+
+                            
+                            <div class="mb-3 p-2">
+                                <label for="reponden_gender" class="form-label required-label">Jenis Kelamin Responden</label>
+                                <select name="reponden_gender" id="reponden_gender" class="form-select">
+                                    <option {{ old('reponden_gender') ?? (isset($form['reponden_gender']) && $form['reponden_gender']=='MALE' ? 'selected' : '') }} value="MALE"> Pria</option>
+                                    <option {{ old('reponden_gender') ?? (isset($form['reponden_gender']) && $form['reponden_gender']=='FEMALE' ? 'selected' : '') }} value="FEMALE">Wanita</option>
+                                </select>
+                                @error('reponden_gender')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                            </div>
+
+                            <div class="mb-3 p-2">
+                                <label for="reponden_education" class="form-label required-label">Pendidikan Responden</label>
+                                <select name="reponden_education" id="reponden_education" class="form-select">
+                                    <option {{ old('reponden_education') ?? (isset($form['reponden_education']) && $form['reponden_education']=='SMP' ? 'selected' : '') }} value="SMP"> SMP</option>
+                                    <option {{ old('reponden_education') ?? (isset($form['reponden_education']) && $form['reponden_education']=='SMA' ? 'selected' : '') }} value="SMA">SMA</option>
+                                    <option {{ old('reponden_education') ?? (isset($form['reponden_education']) && $form['reponden_education']=='Diploma' ? 'selected' : '') }} value="Diploma">Diploma</option>
+                                    <option {{ old('reponden_education') ?? (isset($form['reponden_education']) && $form['reponden_education']=='S1' ? 'selected' : '') }} value="S1">S1</option>
+                                    <option {{ old('reponden_education') ?? (isset($form['reponden_education']) && $form['reponden_education']=='S2' ? 'selected' : '') }} value="S2">S2</option>
+                                    <option {{ old('reponden_education') ?? (isset($form['reponden_education']) && $form['reponden_education']=='S3' ? 'selected' : '') }} value="S3">S3</option>
+                                </select>
+                                @error('reponden_education')
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
                             </div>
@@ -186,7 +235,7 @@
                                 @for($j = 1; $j <= 4; $j++)
                                     @php
                                         // Mendapatkan nilai kepentingan dari array mapping
-                                        $label_radio_korupsi = $radio_label[$j];
+                                        $label_radio_korupsi = $radio_label_korupsi[$j];
                                     @endphp
                                     <div class="form-check form-check-inline">
                                         <input class="form-check-input" type="radio" id="korupsi_{{ $i }}_{{ $j }}" name="korupsi_{{ $i }}" value="{{ $j }}" {{ old("korupsi_{$i}") == $j ? 'checked' : (isset($form["korupsi_{$i}"]) ? ($form["korupsi_{$i}"]==$j?'checked':'') : '') }} required>
@@ -205,6 +254,12 @@
                         <div class="mb-3 p-2">
                             <label for="remark" class="form-label">Saran dan komentar</label>
                             <textarea class="form-control" id="remark" name="remark" rows="3" placeholder="Enter remarks">{{ old('remark') ?? (isset($form['remark']) ? $form['remark'] : '') }}</textarea>
+                        </div>
+
+
+                        <div class="mb-3 p-2">
+                            <label for="complaint" class="form-label">Saran dan Pengaduan</label>
+                            <textarea class="form-control" id="complaint" name="complaint" rows="3" placeholder="Enter complaints">{{ old('complaint') ?? (isset($form['complaint']) ? $form['complaint'] : '') }}</textarea>
                         </div>
                         
                         <!-- Signature Pad -->

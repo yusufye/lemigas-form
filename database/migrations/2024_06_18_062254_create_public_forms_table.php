@@ -47,6 +47,11 @@ return new class extends Migration
             $table->string('company_phone',100)->nullable(true);
             $table->string('signature_path',200)->nullable(true);
             $table->text('remark')->nullable(true);
+            $table->enum('jenis_pelayanan', ['UJI_LAB','TENAGA_AHLI','JASA_STUDI','PENYEWAAN_ALAT','JASA_BLENDING','JASA_SERTIFIKASI_PRODUK'])->nullable(true);
+            $table->integer('responden_age')->nullable(true)->default(0);
+            $table->enum('responden_gender',['MALE','FEMALE'])->nullable(true);
+            $table->enum('responden_education',['SMP','SMA','S1','S2','S3','Diploma'])->nullable(true);
+            $table->text('complaint')->nullable(true);
             $table->timestamp('submitted_at')->nullable(true);
             $table->timestamps();
         });

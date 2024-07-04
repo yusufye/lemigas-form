@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
+use pxlrbt\FilamentExcel\Exports\Formatters\EnumFormatter;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -11,7 +12,10 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        //
+        //formatter enum export excel
+        // App::bind(EnumFormatter::class, function () {
+        //     return new EnumFormatter(';');
+        // });
     }
 
     /**

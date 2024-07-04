@@ -19,7 +19,7 @@
             border: 1px solid black;
         }
         th, td {
-            padding: 5px;
+            padding: 4px;
             text-align: center;
         }
         th {
@@ -63,20 +63,26 @@
                 8 => 'Penanganan aduan, saran dan masukan',
                 9 => 'Fasilitas (kenyamanan, kemudahan informasi dan keamanan lingkungan)',
             ];
-        
-        $radio_kepuasan=[
-            1=>'Tidak Puas',
-            2=>'Kurang Puas',
-            3=>'Puas',
-            4=>'Sangat Puas'
-        ];
 
-        $radio_kepentingan=[
-            1=>'Tidak Penting',
-            2=>'Kurang Penting',
-            3=>'Penting',
-            4=>'Sangat Penting'
-        ];
+        $input_label_korupsi = [
+                1 => 'Persyaratan (administrasi dan dokumen)',
+                2 => 'Prosedur (mekanisme registrasi dan pembayaran)',
+                3 => 'Waktu penyelesaian layanan',
+                4 => 'Biaya/tarif (kewajaran biaya)',
+                5 => 'Produk spesifikasi jenis layanan',
+                6 => 'Kompetensi pelaksanan layanan',
+                7 => 'Perilaku Pelaksana (keramahan dan komunikatif)',
+                8 => 'Penanganan aduan, saran dan masukan',
+                9 => 'Fasilitas (kenyamanan, kemudahan informasi dan keamanan lingkungan)',
+            ];
+        
+        $radio_kepuasan=[ 1=>'Tidak Puas', 2=>'Kurang Puas', 3=>'Puas', 4=>'Sangat Puas' ];
+
+        $radio_kepentingan=[ 1=>'Tidak Penting', 2=>'Kurang Penting', 3=>'Penting', 4=>'Sangat Penting' ];
+
+        $radio_korupsi=[ 1=>'Tidak Sesuai', 2=>'Kurang Sesuai', 3=>'Sesuai', 4=>'Sangat Sesuai' ];
+
+        $enum_pelayanan=['UJI_LAB'=>'Uji Lab','TENAGA_AHLI'=>'Tenaga Ahli','JASA_STUDI'=>'Jasa Studi','PENYEWAAN_ALAT'=>'Penyewaan Alat','JASA_BLENDING'=>'Jasa Blending','JASA_SERTIFIKASI_PRODUK'=>'Jasa Sertifikasi Produk',];
 
         
     @endphp 
@@ -188,7 +194,98 @@
 
     <div class="footer">
         <p class="left">Distribusi: 1.arsip 2. Unit Adm.</p>
-        <p><small> ini milik Balai Besar Pengujian Minyak dan Gas Bumi LEMIGAS, isi dari dokumen ini tidak diperkenankan untuk digandakan atau disalin baik seluruh atau sebagian tanpa izin tertulis dari Balai Besar Pengujian Minyak dan Gas Bumi LEMIGAS</small></p>
+        <p><small> Dokumen ini milik Balai Besar Pengujian Minyak dan Gas Bumi LEMIGAS, isi dari dokumen ini tidak diperkenankan untuk digandakan atau disalin baik seluruh atau sebagian tanpa izin tertulis dari Balai Besar Pengujian Minyak dan Gas Bumi LEMIGAS</small></p>
     </div>
-</body>
+
+    {{-- Page Break --}}
+    <div style="page-break-after: always;"></div>
+
+    {{-- Korpsi --}}
+    <div class="header">
+        <table>
+            <tr>
+                <td rowspan="3" style="font-family:'Courier New';color:blue"><h1>LEMIGAS</h1></td>
+                <td><h3>BALAI BESAR PENGUJIAN MINYAK DAN GAS BUMI LEMIGAS</h3></td>
+                <td class="left" style="border-right-style: hidden; border-bottom-style: hidden;">Nomor Formulir</td>
+                <td class="left" style="border-right-style: hidden;border-bottom-style: hidden;">:</td>
+                <td class="left" style="border-bottom-style: hidden;">F.8.P.01-B</td>
+            </tr>
+            <tr>
+                
+                <td rowspan="2"><h3>KUESIONER SURVEI KUALITAS PELAYANAN BBPMGB LEMIGAS</h3></td>
+                <td class="left" style="border-right-style: hidden;border-bottom-style: hidden;">Revisi</td>
+                <td class="left" style="border-right-style: hidden;border-bottom-style: hidden;">:</td>
+                <td class="left" style="border-bottom-style: hidden;">L.1</td>
+            </tr>
+            <tr>
+                <td class="left" style="border-right-style: hidden;">Halaman </td>
+                <td class="left" style="border-right-style: hidden;">:</td>
+                <td class="left" style="">1 Dari 1</td>
+            </tr>
+        </table>
+
+        
+    </div>
+
+    <div class="left" style="padding-bottom: 10px;">
+        <h3>DATA UNIT PELAYANAN</h3>
+        <p style="padding: 5px;">Nama Unit Pelayanan : BALAI BESAR PENGUJIAN MINYAK DAN GAS BUMI LEMIGAS</p>
+        <p style="padding: 5px;">Spesifikasi Jenis Pelayanan : {{$enum_pelayanan[$record->publicForm->jenis_pelayanan]}}</p>
+    </div>
+
+    <div class="left" style="padding-bottom: 10px;">
+        <h3>DATA RESPONDEN</h3>
+        <p style="padding: 5px;">Nama Perusahaan : {{$record->publicForm->company_name}}</p>
+        <p style="padding: 5px;">Usia/Umur Responden : {{$record->publicForm->responden_age}} Tahun</p>
+        <p style="padding: 5px;">Jenis Kelamin : {{($record->publicForm->responden_gender=='MALE'?'Pria':'Wanita')}}</p>
+        <p style="padding: 5px;">Pendidikan : {{$record->publicForm->responden_education}}</p>
+    </div>
+
+    <h3>DATA KUISIONER</h3>
+    <p>Beri Tanda (V) pada jawaban yang sesuai</p>
+    <table class="left">
+        <thead>
+            <tr>
+                <th>No.</th>
+                <th>Pertanyaan</th>
+                @foreach($radio_korupsi as $key => $label)
+                    <th>{{ $key }}<br/>{{ $label }}</th>
+                @endforeach
+            </tr>
+        </thead>
+        <tbody>
+            @foreach($input_label_korupsi as $key => $label)
+                <tr>
+                    <td>{{ $key }}</td>
+                    <td class="left">{{ $label }}</td>
+                    @foreach($radio_korupsi as $radio_key => $radio )
+                    @php
+                    $fieldName_korupsi = "korupsi_{$key}";
+                    @endphp
+                    
+                        @if ($record->publicForm->$fieldName_korupsi==$radio_key)
+                        <td> V </td>
+                         @else
+                         <td></td>
+                        @endif
+                    @endforeach
+                </tr>
+            @endforeach
+        </tbody>
+    </table>
+
+    <p>Saran dan Pengaduan:{{$record->publicForm->complaint}}</p>
+    <p>Nama Petugas:{{$record->user_created->name}}</p>
+    <p>Tanggal Survei:{{date('d M Y',strtotime($record->publicForm->submitted_at))}}</p>
+    <p class="right" style="padding-right:120px;">Jakarta, {{date('d M Y',strtotime($record->publicForm->submitted_at))}}</p>
+    <p class="right" style="padding-right:150px;padding-bottom: 10px;">Pelanggan,</p>
+    <p class="right" style="padding-right:120px;"><img src="{{public_path('storage/'.$record->publicForm->signature_path)}}" alt="" style="max-width: 100px;"></p>
+    <p class="right" style="padding-right:100px;">(___________________________)</p>
+
+    <div class="footer">
+        <p class="left">Distribusi: 1.arsip 2. Unit Adm.</p>
+        <p><small> Dokumen ini milik Balai Besar Pengujian Minyak dan Gas Bumi LEMIGAS, isi dari dokumen ini tidak diperkenankan untuk digandakan atau disalin baik seluruh atau sebagian tanpa izin tertulis dari Balai Besar Pengujian Minyak dan Gas Bumi LEMIGAS</small></p>
+    </div>
+
+    </body>
 </html>

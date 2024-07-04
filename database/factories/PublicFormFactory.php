@@ -49,7 +49,12 @@ class PublicFormFactory extends Factory
             'company_address'=>fake()->address(),
             'company_phone'=>fake()->phoneNumber(),
             'remark'=>fake()->sentence(3),
-            'submitted_at'=>$this->faker->dateTimeBetween('-30 days', '+120 days')
+            'submitted_at'=>$this->faker->dateTimeBetween('-30 days', '+120 days'),
+            'jenis_pelayanan'=>$this->faker->randomElement(['UJI_LAB','TENAGA_AHLI','JASA_STUDI','PENYEWAAN_ALAT','JASA_BLENDING','JASA_SERTIFIKASI_PRODUK']),
+            'responden_age'=>fake()->numberBetween(30,55),
+            'responden_gender'=>$this->faker->randomElement(['MALE','FEMALE']),
+            'responden_education'=>$this->faker->randomElement(['SMP','SMA','S1','S2','S3','Diploma']),
+            'complaint'=>fake()->sentence(3)
         ];
     }
 }
