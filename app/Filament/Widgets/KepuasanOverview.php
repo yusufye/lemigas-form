@@ -19,10 +19,14 @@ class KepuasanOverview extends BaseWidget
     {
         $startDate = $this->filters['startDate'] ?? null;
         $endDate = $this->filters['endDate'] ?? null;
+        $user_id = $this->filters['user_id'] ?? null;
+
 
         $publicForms = PublicForm::with('code')
-        ->whereHas('code', function($query) {
-            $query->where('is_active', 1);
+        ->whereHas('code', function($query) use ($user_id) {
+            $query->where('is_active', 1)
+            ->when($user_id, fn (Builder $query) => $query->whereIn('created_by', $user_id))
+            ->when(!auth()->user()->hasRole('super_admin'), fn (Builder $query) => $query->where('created_by', auth()->id()));
         })
         ->whereNotNull('submitted_at')
         ->when($startDate, fn (Builder $query) => $query->whereDate('submitted_at', '>=', $startDate))

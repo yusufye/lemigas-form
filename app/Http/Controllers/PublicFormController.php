@@ -39,12 +39,17 @@ class PublicFormController extends Controller
             // try {
             $code=Code::all()->find($decryptedCodeId);
             
-            $data['code_id']         = $decryptedCodeId;
-            $data['submitted_at']    = date('Y-m-d H:i:s');
-            $data['company_name']    = $request->company_name;
-            $data['company_address'] = $request->company_address;
-            $data['company_phone']   = $request->company_phone;
-            $data['remark']          = $request->remark;
+            $data['code_id']             = $decryptedCodeId;
+            $data['submitted_at']        = date('Y-m-d H:i:s');
+            $data['company_name']        = $request->company_name;
+            $data['company_address']     = $request->company_address;
+            $data['company_phone']       = $request->company_phone;
+            $data['remark']              = $request->remark;
+            $data['jenis_pelayanan']     = $request->jenis_pelayanan;
+            $data['responden_age']       = $request->responden_age;
+            $data['responden_gender']    = $request->responden_gender;
+            $data['responden_education'] = $request->responden_education;
+            $data['complaint']           = $request->complaint;
 
             for ($i = 1; $i <= 9; $i++) {
                 $data["kepentingan_{$i}"] = $request->input("kepentingan_{$i}");

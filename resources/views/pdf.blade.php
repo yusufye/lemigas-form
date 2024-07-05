@@ -39,9 +39,17 @@
         .header {
             margin-bottom: 5px;
         }
+
         .footer {
-            margin-top: 5px;
-            text-align: center;
+            position: fixed;
+            width: 100%;
+            bottom: 0;
+            left: 0;
+            right: 0;
+        }
+
+        .footer p {
+            margin-top:5px;
         }
 
         .div-outline {
@@ -194,7 +202,7 @@
 
     <div class="footer">
         <p class="left">Distribusi: 1.arsip 2. Unit Adm.</p>
-        <p><small> Dokumen ini milik Balai Besar Pengujian Minyak dan Gas Bumi LEMIGAS, isi dari dokumen ini tidak diperkenankan untuk digandakan atau disalin baik seluruh atau sebagian tanpa izin tertulis dari Balai Besar Pengujian Minyak dan Gas Bumi LEMIGAS</small></p>
+        <p class="center"><small> Dokumen ini milik Balai Besar Pengujian Minyak dan Gas Bumi LEMIGAS, isi dari dokumen ini tidak diperkenankan untuk digandakan atau disalin baik seluruh atau sebagian tanpa izin tertulis dari Balai Besar Pengujian Minyak dan Gas Bumi LEMIGAS</small></p>
     </div>
 
     {{-- Page Break --}}
@@ -230,7 +238,7 @@
     <div class="left" style="padding-bottom: 10px;">
         <h3>DATA UNIT PELAYANAN</h3>
         <p style="padding: 5px;">Nama Unit Pelayanan : BALAI BESAR PENGUJIAN MINYAK DAN GAS BUMI LEMIGAS</p>
-        <p style="padding: 5px;">Spesifikasi Jenis Pelayanan : {{$enum_pelayanan[$record->publicForm->jenis_pelayanan]}}</p>
+        <p style="padding: 5px;">Spesifikasi Jenis Pelayanan : {{(!empty($record->publicForm->jenis_pelayanan))?$enum_pelayanan[$record->publicForm->jenis_pelayanan]:'-'}}</p>
     </div>
 
     <div class="left" style="padding-bottom: 10px;">
@@ -284,7 +292,7 @@
 
     <div class="footer">
         <p class="left">Distribusi: 1.arsip 2. Unit Adm.</p>
-        <p><small> Dokumen ini milik Balai Besar Pengujian Minyak dan Gas Bumi LEMIGAS, isi dari dokumen ini tidak diperkenankan untuk digandakan atau disalin baik seluruh atau sebagian tanpa izin tertulis dari Balai Besar Pengujian Minyak dan Gas Bumi LEMIGAS</small></p>
+        <p class="center"><small> Dokumen ini milik Balai Besar Pengujian Minyak dan Gas Bumi LEMIGAS, isi dari dokumen ini tidak diperkenankan untuk digandakan atau disalin baik seluruh atau sebagian tanpa izin tertulis dari Balai Besar Pengujian Minyak dan Gas Bumi LEMIGAS</small></p>
     </div>
 
     </body>

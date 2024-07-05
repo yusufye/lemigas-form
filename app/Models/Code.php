@@ -17,8 +17,13 @@ class Code extends Model
 
     public static function findByEncryptedId($encryptedId)
     {
-        $id = Crypt::decryptString($encryptedId);
-        return static::findOrFail($id);
+        try {
+            //code...
+            $id = Crypt::decryptString($encryptedId);
+            return static::findOrFail($id);
+        } catch (\Throwable $th) {
+            abort(404);
+        }
     }
 
     public function publicForm(): HasOne
