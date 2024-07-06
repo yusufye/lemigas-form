@@ -56,7 +56,7 @@ class KepentinganOverview extends BaseWidget
         });
 
         return [
-            Stat::make('Rata-rata Kepentingan', round($rowAverages->avg(), 2))
+            Stat::make('Nilai Kepentingan', round($rowAverages->avg(), 2))
         ];
     }
 }

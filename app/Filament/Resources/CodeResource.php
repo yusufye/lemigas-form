@@ -50,7 +50,7 @@ class CodeResource extends Resource
             ->schema([
                 TextInput::make('code')->required()->unique(modifyRuleUsing: function (Unique $rule) {
                     return $rule->where('created_by',auth()->id());
-                })->numeric()
+                })->numeric()->rules(['digits_between:1,15'])
             ]);
     }
 
@@ -83,7 +83,7 @@ class CodeResource extends Resource
             ])
             ->defaultSort('created_at', 'desc')
             ->modifyQueryUsing(function (Builder $query) {
-                if (auth()->user()->hasRole('Admin')) {
+                if (!auth()->user()->hasRole('super_admin')) {
                     return $query->where(['created_by'=>auth()->id(),'is_active'=>1]);
                 }
             })

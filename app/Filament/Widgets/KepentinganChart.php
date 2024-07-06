@@ -67,7 +67,7 @@ class KepentinganChart extends ChartWidget
         return [
             'datasets' => [
                 [
-                    'label' => 'Rata-rata',
+                    'label' => 'Nilai',
                     'data' => array_values($averages),
                 ],
             ],

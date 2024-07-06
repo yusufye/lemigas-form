@@ -52,7 +52,7 @@ class KepuasanOverview extends BaseWidget
             return $values->avg();
         });
         return [
-            Stat::make('Rata-rata Kepuasan', round($rowAverages->avg(), 2))
+            Stat::make('Nilai Kepuasan', round($rowAverages->avg(), 2))
         ];
     }
 }

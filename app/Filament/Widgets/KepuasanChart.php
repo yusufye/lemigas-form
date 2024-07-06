@@ -66,7 +66,7 @@ class KepuasanChart extends ChartWidget
         $chartData = [
             'datasets' => [
                 [
-                    'label' => 'Rata-rata',
+                    'label' => 'Nilai',
                     'data' => array_values($averages),
                 ],
             ],

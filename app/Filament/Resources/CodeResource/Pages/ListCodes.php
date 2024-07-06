@@ -46,6 +46,7 @@ class ListCodes extends ListRecords
         ];
 
         $enum_jenis_pelayanan=['UJI_LAB'=>'Uji Lab','TENAGA_AHLI'=>'Tenaga Ahli','JASA_STUDI'=>'Jasa Studi','PENYEWAAN_ALAT'=>'Penyewaan Alat','JASA_BLENDING'=>'Jasa Blending','JASA_SERTIFIKASI_PRODUK'=>'Jasa Sertifikasi Produk'];
+        $enum_jenis_kemalin=['MALE'=>'Pria','FEMALE'=>'Wanita'];
     
         
         $data_default=array(
@@ -56,31 +57,37 @@ class ListCodes extends ListRecords
             Column::make('publicForm.company_phone')->heading('Telepon/Fax'),
         );
 
+        $data_default_korupsi=array(
+            Column::make('publicForm.jenis_pelayanan')->heading('Jenis Pelayanan')->formatStateUsing(fn ($state) => $enum_jenis_pelayanan[$state] ),
+            Column::make('publicForm.responden_age')->heading('Usia Responden'),
+            Column::make('publicForm.responden_gender')->heading('Jenis Kelamin')->formatStateUsing(fn ($state) => $enum_jenis_kemalin[$state] ),
+            Column::make('publicForm.responden_education')->heading('Pendidikan Responden')
+        );
+
+        
+
         $data_kepentingan=$data_default;
-        for ($i=1; $i < 9; $i++) { 
+        for ($i=1; $i <= 9; $i++) { 
             $data_kepentingan[]=Column::make('publicForm.kepentingan_'.$i)->heading($input_label[$i]);
         }
         $data_kepentingan[]=Column::make('publicForm.remark')->heading('Catatan dan komentar');
         $data_kepentingan[]=Column::make('publicForm.submitted_at')->heading('Tanggal form disimpan');
 
         $data_kepuasan=$data_default;
-        for ($i=1; $i < 9; $i++) { 
+        for ($i=1; $i <= 9; $i++) { 
             $data_kepuasan[]=Column::make('publicForm.kepuasan_'.$i)->heading($input_label[$i]);
         }
         $data_kepuasan[]=Column::make('publicForm.remark')->heading('Catatan dan komentar');
         $data_kepuasan[]=Column::make('publicForm.submitted_at')->heading('Tanggal form disimpan');
 
-        $data_korupsi=$data_default;
-        for ($i=1; $i < 9; $i++) { 
+        $data_korupsi=array_merge($data_default,$data_default_korupsi);
+        for ($i=1; $i <= 9; $i++) { 
             $data_korupsi[]=Column::make('publicForm.korupsi_'.$i)->heading($input_label_korupsi[$i]);
         }
         // $data_korupsi[]=Column::make('publicForm.remark')->heading('Catatan dan komentar');
-        $data_korupsi[]=Column::make('publicForm.submitted_at')->heading('Tanggal form disimpan');
-        $data_korupsi[]=Column::make('publicForm.jenis_pelayanan')->heading('Jenis Pelayanan')->formatStateUsing(fn ($state) => $enum_jenis_pelayanan[$state] );
-        $data_korupsi[]=Column::make('publicForm.responden_age')->heading('Usia Responden');
-        $data_korupsi[]=Column::make('publicForm.responden_gender')->heading('Jenis Kelamin');
-        $data_korupsi[]=Column::make('publicForm.responden_education')->heading('Pendidikan Responden');
         $data_korupsi[]=Column::make('publicForm.complaint')->heading('Catatan dan Pengaduan');
+        $data_korupsi[]=Column::make('publicForm.submitted_at')->heading('Tanggal form disimpan');
+        
 
         
         return [

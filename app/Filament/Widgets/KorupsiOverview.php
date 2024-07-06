@@ -52,7 +52,7 @@ class KorupsiOverview extends BaseWidget
         });
         
         return [
-            Stat::make('Rata-rata korupsi', round($rowAverages->avg(), 2))
+            Stat::make('Nilai korupsi', round($rowAverages->avg(), 2))
         ];
     }
 }
