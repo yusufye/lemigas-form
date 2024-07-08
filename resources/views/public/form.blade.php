@@ -140,7 +140,7 @@
 
                             <div class="mb-3 p-2">
                                 <label for="responden_age" class="form-label required-label">Usia Responden</label>
-                                <input type="number" min="20" max="100" class="form-control" id="responden_age" name="responden_age" placeholder="Enter Age" value="{{ old('responden_age') ?? (isset($form['responden_age']) ? $form['responden_age'] : '') }}" required>
+                                <input type="number" class="form-control" id="responden_age" name="responden_age" placeholder="Enter Age" value="{{ old('responden_age') ?? (isset($form['responden_age']) ? $form['responden_age'] : '') }}" required>
                                 @error('responden_age')
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
