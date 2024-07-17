@@ -67,7 +67,9 @@ class CodeResource extends Resource
                 ->searchable()
                 ->sortable()
                 ->copyable()
-                ->copyableState(fn (Code $record) => url('public/'.Crypt::encryptString($record->id)))->copyMessage('Link Copied'),
+                // ->copyableState(fn (Code $record) => url('public/'.Crypt::encryptString($record->id)))->copyMessage('Link Copied'),
+                ->copyableState(fn (Code $record) => Crypt::encryptString($record->id))->copyMessage('Encrypted ID Copied'),
+
                 TextColumn::make('user_created.name')
                 ->label('User')
                 ->sortable()
@@ -109,7 +111,14 @@ class CodeResource extends Resource
                     ->icon('heroicon-o-document-arrow-down')
                     ->url(fn (Code $record) => route('pdf', $record))
                     ->openUrlInNewTab()
-                    ->visible(fn ($record) => $record->publicForm && $record->publicForm->submitted_at)
+                    ->visible(fn ($record) => $record->publicForm && $record->publicForm->submitted_at),
+                    Tables\Actions\Action::make('openForm')
+                    ->iconButton()
+                    ->tooltip('Open Form')
+                    ->icon('heroicon-s-square-2-stack')
+                    ->color('primary')
+                    ->url(fn ($record) => route('public-form', Crypt::encryptString($record->id)))
+                    ->openUrlInNewTab(),
 
             ])
             ->bulkActions([
