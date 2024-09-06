@@ -57,6 +57,7 @@ class KepentinganOverview extends BaseWidget
 
         return [
             Stat::make('Nilai Kepentingan', round($rowAverages->avg(), 2))
+            ->description('Dari '.$publicForms->count().' responden' )
         ];
     }
 }

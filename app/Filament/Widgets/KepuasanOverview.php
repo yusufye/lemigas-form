@@ -53,6 +53,7 @@ class KepuasanOverview extends BaseWidget
         });
         return [
             Stat::make('Nilai Kepuasan', round($rowAverages->avg(), 2))
+            ->description('Dari '.$publicForms->count().' responden' )
         ];
     }
 }

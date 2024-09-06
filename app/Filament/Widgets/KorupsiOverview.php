@@ -53,6 +53,7 @@ class KorupsiOverview extends BaseWidget
         
         return [
             Stat::make('Nilai korupsi', round($rowAverages->avg(), 2))
+            ->description('Dari '.$publicForms->count().' responden' )
         ];
     }
 }
