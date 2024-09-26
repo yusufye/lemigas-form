@@ -67,8 +67,8 @@ class CodeResource extends Resource
                 ->searchable()
                 ->sortable()
                 ->copyable()
-                // ->copyableState(fn (Code $record) => url('public/'.Crypt::encryptString($record->id)))->copyMessage('Link Copied'),
-                ->copyableState(fn (Code $record) => Crypt::encryptString($record->id))->copyMessage('Encrypted ID Copied'),
+                ->copyableState(fn (Code $record) => url('public/'.Crypt::encryptString($record->id)))->copyMessage('Link Copied'),
+                //->copyableState(fn (Code $record) => Crypt::encryptString($record->id))->copyMessage('Encrypted ID Copied'),
 
                 TextColumn::make('user_created.name')
                 ->label('User')
