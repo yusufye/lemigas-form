@@ -34,15 +34,15 @@ class ListCodes extends ListRecords
         ];
 
         $input_label_korupsi = [
-            1 => 'Persyaratan (administrasi dan dokumen)',
-            2 => 'Prosedur (mekanisme registrasi dan pembayaran)',
-            3 => 'Waktu penyelesaian layanan',
-            4 => 'Biaya/tarif (kewajaran biaya)',
-            5 => 'Produk spesifikasi jenis layanan',
-            6 => 'Kompetensi pelaksanan layanan',
-            7 => 'Perilaku Pelaksana (keramahan dan komunikatif)',
-            8 => 'Penanganan aduan, saran dan masukan',
-            9 => 'Fasilitas (kenyamanan, kemudahan informasi dan keamanan lingkungan)',
+            1 => 'Prosedur pelayanan yang ditetapkan sudah memadai dan tidak berpotensi menimbulkan KKN',
+            2 => 'Petugas pelayanan tdak memberikan pelayanan di luar prosedur yang telah ditetapkan',
+            3 => 'Tidak terdapat praktek pen-calo-an/perantara yang tidak resmi',
+            4 => 'Petugas pelayanan tidak diskriminasi',
+            5 => 'Tidak terdapat pungutan liar dalam pelayanan',
+            6 => 'Petugas pelayanan tidak meminta/menuntut imbalan uang/barang terkait pelayanan yang diberikan',
+            7 => 'Petugas pelayanan tidak memberi kode atau isyarat terkait kimbalan uang / barang dan menolak pemberian uang / barang terkait pelayanan yang diberikan',
+            8 => 'Jasa pelayanan yang diterima sesuai dengan daftar jasa layanan yang tersedia / diminta',
+            9 => 'Tidak diskriminatif dalam penanganan pengaduan',
         ];
 
         $enum_jenis_pelayanan=['UJI_LAB'=>'Uji Lab','TENAGA_AHLI'=>'Tenaga Ahli','JASA_STUDI'=>'Jasa Studi','PENYEWAAN_ALAT'=>'Penyewaan Alat','JASA_BLENDING'=>'Jasa Blending','JASA_SERTIFIKASI_PRODUK'=>'Jasa Sertifikasi Produk'];

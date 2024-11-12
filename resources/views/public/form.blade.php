@@ -44,6 +44,18 @@
                 8 => 'Penanganan aduan, saran dan masukan',
                 9 => 'Fasilitas (kenyamanan, kemudahan informasi dan keamanan lingkungan)',
             ];
+
+            $input_label_korupsi = [
+                1 => 'Prosedur pelayanan yang ditetapkan sudah memadai dan tidak berpotensi menimbulkan KKN',
+                2 => 'Petugas pelayanan tdak memberikan pelayanan di luar prosedur yang telah ditetapkan',
+                3 => 'Tidak terdapat praktek pen-calo-an/perantara yang tidak resmi',
+                4 => 'Petugas pelayanan tidak diskriminasi',
+                5 => 'Tidak terdapat pungutan liar dalam pelayanan',
+                6 => 'Petugas pelayanan tidak meminta/menuntut imbalan uang/barang terkait pelayanan yang diberikan',
+                7 => 'Petugas pelayanan tidak memberi kode atau isyarat terkait kimbalan uang / barang dan menolak pemberian uang / barang terkait pelayanan yang diberikan',
+                8 => 'Jasa pelayanan yang diterima sesuai dengan daftar jasa layanan yang tersedia / diminta',
+                9 => 'Tidak diskriminatif dalam penanganan pengaduan',
+            ];
         
         $radio_label_kepentingan=[
             1=>'Tidak Penting',
@@ -147,27 +159,27 @@
                             </div>
                             
                             <div class="mb-3 p-2">
-                                <label for="reponden_gender" class="form-label required-label">Jenis Kelamin Responden</label>
-                                <select name="reponden_gender" id="reponden_gender" class="form-select">
-                                    <option {{ old('reponden_gender') ?? (isset($form['reponden_gender']) && $form['reponden_gender']=='MALE' ? 'selected' : '') }} value="MALE"> Pria</option>
-                                    <option {{ old('reponden_gender') ?? (isset($form['reponden_gender']) && $form['reponden_gender']=='FEMALE' ? 'selected' : '') }} value="FEMALE">Wanita</option>
+                                <label for="responden_gender" class="form-label required-label">Jenis Kelamin Responden</label>
+                                <select name="responden_gender" id="responden_gender" class="form-select">
+                                    <option {{ old('responden_gender') ?? (isset($form['responden_gender']) && $form['responden_gender']=='MALE' ? 'selected' : '') }} value="MALE"> Pria</option>
+                                    <option {{ old('responden_gender') ?? (isset($form['responden_gender']) && $form['responden_gender']=='FEMALE' ? 'selected' : '') }} value="FEMALE">Wanita</option>
                                 </select>
-                                @error('reponden_gender')
+                                @error('responden_gender')
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
                             </div>
 
                             <div class="mb-3 p-2">
-                                <label for="reponden_education" class="form-label required-label">Pendidikan Responden</label>
-                                <select name="reponden_education" id="reponden_education" class="form-select">
-                                    <option {{ old('reponden_education') ?? (isset($form['reponden_education']) && $form['reponden_education']=='SMP' ? 'selected' : '') }} value="SMP"> SMP</option>
-                                    <option {{ old('reponden_education') ?? (isset($form['reponden_education']) && $form['reponden_education']=='SMA' ? 'selected' : '') }} value="SMA">SMA</option>
-                                    <option {{ old('reponden_education') ?? (isset($form['reponden_education']) && $form['reponden_education']=='Diploma' ? 'selected' : '') }} value="Diploma">Diploma</option>
-                                    <option {{ old('reponden_education') ?? (isset($form['reponden_education']) && $form['reponden_education']=='S1' ? 'selected' : '') }} value="S1">S1</option>
-                                    <option {{ old('reponden_education') ?? (isset($form['reponden_education']) && $form['reponden_education']=='S2' ? 'selected' : '') }} value="S2">S2</option>
-                                    <option {{ old('reponden_education') ?? (isset($form['reponden_education']) && $form['reponden_education']=='S3' ? 'selected' : '') }} value="S3">S3</option>
+                                <label for="responden_education" class="form-label required-label">Pendidikan Responden</label>
+                                <select name="responden_education" id="responden_education" class="form-select">
+                                    <option {{ old('responden_education') ?? (isset($form['responden_education']) && $form['responden_education']=='SMP' ? 'selected' : '') }} value="SMP"> SMP</option>
+                                    <option {{ old('responden_education') ?? (isset($form['responden_education']) && $form['responden_education']=='SMA' ? 'selected' : '') }} value="SMA">SMA</option>
+                                    <option {{ old('responden_education') ?? (isset($form['responden_education']) && $form['responden_education']=='Diploma' ? 'selected' : '') }} value="Diploma">Diploma</option>
+                                    <option {{ old('responden_education') ?? (isset($form['responden_education']) && $form['responden_education']=='S1' ? 'selected' : '') }} value="S1">S1</option>
+                                    <option {{ old('responden_education') ?? (isset($form['responden_education']) && $form['responden_education']=='S2' ? 'selected' : '') }} value="S2">S2</option>
+                                    <option {{ old('responden_education') ?? (isset($form['responden_education']) && $form['responden_education']=='S3' ? 'selected' : '') }} value="S3">S3</option>
                                 </select>
-                                @error('reponden_education')
+                                @error('responden_education')
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
                             </div>
@@ -236,7 +248,7 @@
                             <div class="mb-3 p-2">
                                 @php
                                     // Mendapatkan nilai kepentingan dari array mapping
-                                    $label_korupsi = $input_label[$i];
+                                    $label_korupsi = $input_label_korupsi[$i];
                                 @endphp
                                 <label for="korupsi_{{ $i }}" class="form-label required-label">{{ $label_korupsi }}</label><br>
                                 @for($j = 1; $j <= 4; $j++)
