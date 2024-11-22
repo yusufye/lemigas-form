@@ -101,7 +101,29 @@ class CodeResource extends Resource
                             $query->whereBetween('submitted_at', [$startDate, $endDate]);
                         });
                     });
-                })
+                }),
+                SelectFilter::make('submitted_at')
+                ->options([
+                    'submitted' => 'Submitted',
+                    'unsubmitted' => 'Unsubmitted',
+                ])
+                ->label('Submit Status')
+                ->query(
+                    fn (array $data, Builder $query): Builder =>
+                    $query->when(
+                        $data['value'],
+                        function (Builder $query) use ($data) {
+                            if ($data['value'] === 'submitted') {
+                                $query->whereHas('publicForm', function (Builder $query) {
+                                    $query->whereNotNull('submitted_at');
+                                });
+                            } elseif ($data['value'] === 'unsubmitted') {
+                                $query->whereDoesntHave('publicForm', function (Builder $query) {
+                                });
+                            }
+                        }
+                    )
+                )
 
             ],layout: FiltersLayout::AboveContentCollapsible)
             ->actions([

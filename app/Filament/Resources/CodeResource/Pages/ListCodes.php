@@ -98,9 +98,9 @@ class ListCodes extends ListRecords
                     ->fromTable()
                     ->except([ 'is_active', 'user'])
                     ->modifyQueryUsing(fn ($query) => $query->where('is_active', true)
-                        ->whereHas('publicForm', function ($query) {
-                            $query->whereNotNull('submitted_at');
-                        })
+                        // ->whereHas('publicForm', function ($query) {
+                        //     $query->whereNotNull('submitted_at');
+                        // })
                     )
                     ->withFilename(fn ($resource) =>  'form_kepentingan_' . date('dMY_His'))
                     // ->withWriterType(\Maatwebsite\Excel\Excel::CSV)
@@ -109,9 +109,9 @@ class ListCodes extends ListRecords
                     ->fromTable()
                     ->except([ 'is_active', 'user'])
                     ->modifyQueryUsing(fn ($query) => $query->where('is_active', true)
-                        ->whereHas('publicForm', function ($query) {
-                            $query->whereNotNull('submitted_at');
-                        })
+                        // ->whereHas('publicForm', function ($query) {
+                        //     $query->whereNotNull('submitted_at');
+                        // })
                     )
                     ->withFilename(fn ($resource) =>  'form_kepuasan_' . date('dMY_His'))
                     // ->withWriterType(\Maatwebsite\Excel\Excel::CSV)
@@ -120,9 +120,9 @@ class ListCodes extends ListRecords
                     ->fromTable()
                     ->except([ 'is_active', 'user'])
                     ->modifyQueryUsing(fn ($query) => $query->where('is_active', true)
-                        ->whereHas('publicForm', function ($query) {
-                            $query->whereNotNull('submitted_at');
-                        })
+                        // ->whereHas('publicForm', function ($query) {
+                        //     $query->whereNotNull('submitted_at');
+                        // })
                     )
                     ->withFilename(fn ($resource) =>  'form_korupsi_' . date('dMY_His'))
                     // ->withWriterType(\Maatwebsite\Excel\Excel::CSV)
