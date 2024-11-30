@@ -13,7 +13,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 class Code extends Model
 {
     use HasFactory;
-    protected $fillable = ['code','created_by'];
+    protected $fillable = ['code','created_by','attachment','external_link'];
 
     public static function findByEncryptedId($encryptedId)
     {

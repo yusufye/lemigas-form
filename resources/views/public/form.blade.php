@@ -132,6 +132,23 @@
                         <p class="text-end font-monospace fs-6">
                             <small>{{(isset($form['submitted_at']) ?'Submitted at: '.date('d M Y H:i:s',strtotime($form['submitted_at'])) : '')}}</small>
                         </p>
+                        <p>
+                            <small>
+                                
+                                <ul>
+                                    @isset($code->attachment)
+                                        <li>
+                                            <a href='{{Storage::url($code->attachment)}}' target="_blank" download>Download File</a>
+                                        </li>
+                                    @endisset
+                                    @isset($code->external_link)
+                                        <li>
+                                            <a href="{{$code->external_link}}" target="_blank">Open Link</a>
+                                        </li>
+                                    @endisset
+                                </ul>
+                            </small>
+                        </p>
                        
 
                     </div>

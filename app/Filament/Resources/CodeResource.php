@@ -15,6 +15,7 @@ use Filament\Resources\Resource;
 use Filament\Tables\Filters\Filter;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\Crypt;
+use Filament\Forms\Components\Textarea;
 use Filament\Tables\Actions\ViewAction;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
@@ -23,9 +24,11 @@ use Illuminate\Validation\Rules\Unique;
 use Filament\Forms\Components\TextInput;
 use Filament\Tables\Columns\BadgeColumn;
 use Filament\Tables\Enums\FiltersLayout;
+use Filament\Forms\Components\FileUpload;
 use Filament\Tables\Columns\ToggleColumn;
 use Filament\Tables\Filters\SelectFilter;
 use Illuminate\Database\Eloquent\Builder;
+use Filament\Infolists\Components\TextEntry;
 use Filament\Infolists\Components\ViewEntry;
 use App\Filament\Resources\CodeResource\Pages;
 use Filament\Tables\Columns\Summarizers\Range;
@@ -50,8 +53,30 @@ class CodeResource extends Resource
             ->schema([
                 TextInput::make('code')->required()->unique(modifyRuleUsing: function (Unique $rule) {
                     return $rule->where('created_by',auth()->id());
-                })->numeric()->rules(['digits_between:1,15'])
-            ]);
+                })->numeric()->rules(['digits_between:1,15'])->columnSpan(2),
+                FileUpload::make('attachment')
+                ->acceptedFileTypes([
+                    'application/pdf',          // PDF
+                    'text/csv',                 // CSV
+                    'application/vnd.ms-excel', // XLS
+                    'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', // XLSX
+                    'application/msword',       // DOC
+                    'application/vnd.openxmlformats-officedocument.wordprocessingml.document', // DOCX
+                    'image/png',                // PNG
+                    'image/jpeg',               // JPG, JPEG
+                    'application/zip',          // ZIP
+                    'application/x-rar-compressed', // RAR
+                ])
+                ->maxSize(10240)
+                ->disk('public') // Menyimpan di disk 'public'
+                ->directory('uploads/code/') // Folder di storage
+                ->label('Upload File'),
+                Textarea::make('external_link')
+                ->rule('regex:/^https:\/\/.+$/i') // Validasi harus diawali dengan "https://"
+                ->placeholder('https://example.com')
+                ->helperText('URL harus diawali dengan https://'),
+            ])
+            ->columns(2);
     }
 
     public static function table(Table $table): Table
