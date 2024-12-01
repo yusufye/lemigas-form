@@ -6,6 +6,7 @@ use Filament\Forms;
 use App\Models\Code;
 use App\Models\User;
 use Filament\Tables;
+use App\Models\CodeFile;
 use Filament\Forms\Form;
 use Filament\Tables\Table;
 use Illuminate\Support\Carbon;
@@ -20,6 +21,7 @@ use Filament\Tables\Actions\ViewAction;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Columns\ViewColumn;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\Rules\Unique;
 use Filament\Forms\Components\TextInput;
 use Filament\Tables\Columns\BadgeColumn;
@@ -53,8 +55,12 @@ class CodeResource extends Resource
             ->schema([
                 TextInput::make('code')->required()->unique(modifyRuleUsing: function (Unique $rule) {
                     return $rule->where('created_by',auth()->id());
-                })->numeric()->rules(['digits_between:1,15'])->columnSpan(2),
-                FileUpload::make('attachment')
+                },ignoreRecord: true)->numeric()
+                ->rules(['digits_between:1,15'])
+                ->columnSpan(2)
+                ->disabled(fn ($record) => $record !== null) // Menonaktifkan input jika ada record (edit mode)
+                ->reactive(),
+                FileUpload::make('files')
                 ->acceptedFileTypes([
                     'application/pdf',          // PDF
                     'text/csv',                 // CSV
@@ -68,9 +74,32 @@ class CodeResource extends Resource
                     'application/x-rar-compressed', // RAR
                 ])
                 ->maxSize(10240)
+                ->multiple()
+                ->maxFiles(5) // Maksimal jumlah file
                 ->disk('public') // Menyimpan di disk 'public'
-                ->directory('uploads/code/') // Folder di storage
-                ->label('Upload File'),
+                ->directory('uploads/code') // Folder di storage
+                ->label('Upload File')
+                ->disabled(fn ($record) => $record !== null && $record->publicForm && $record->publicForm->submitted_at)
+                ->saveRelationshipsUsing(function ($component, $state, $record) {
+                    $record->files->each(function ($file) {
+                        if (Storage::disk('public')->exists($file->file_path)) {
+                            Storage::disk('public')->delete($file->file_path);  // Menghapus file secara fisik
+                        }
+                        $file->delete(); // Hapus record
+                    });
+
+                    foreach ($state as $filePath) {
+                        $record->files()->create([
+                            'file_path' => $filePath,
+                        ]);
+                    }
+                })
+                ->afterStateHydrated(function (FileUpload $component, $state, $record) {
+                    // Ambil file path dari relasi dan masukkan ke state
+                    if ($record) {
+                        $component->state($record->files->pluck('file_path')->toArray());
+                    }
+                }),
                 Textarea::make('external_link')
                 ->rule('regex:/^https:\/\/.+$/i') // Validasi harus diawali dengan "https://"
                 ->placeholder('https://example.com')
@@ -215,5 +244,8 @@ class CodeResource extends Resource
         // Pastikan untuk memuat relasi 'publicForm'
         return Code::query()->with('publicForm');
     }
+
+    
+
     
 }

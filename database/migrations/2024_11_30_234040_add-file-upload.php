@@ -12,7 +12,6 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('codes', function (Blueprint $table) {
-            $table->string('attachment', length: 200)->nullable();
             $table->longText('external_link')->nullable();
 
         });
@@ -24,7 +23,6 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('codes', function (Blueprint $table) {
-            $table->dropColumn('attachment');
             $table->dropColumn('external_link');
         });
     }

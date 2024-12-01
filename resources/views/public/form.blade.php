@@ -132,14 +132,19 @@
                         <p class="text-end font-monospace fs-6">
                             <small>{{(isset($form['submitted_at']) ?'Submitted at: '.date('d M Y H:i:s',strtotime($form['submitted_at'])) : '')}}</small>
                         </p>
+                        @isset($form['submitted_at'])
                         <p>
                             <small>
-                                
                                 <ul>
-                                    @isset($code->attachment)
-                                        <li>
-                                            <a href='{{Storage::url($code->attachment)}}' target="_blank" download>Download File</a>
-                                        </li>
+                                    @isset($code->files)
+                                    @if (!empty($code->files))
+                                        @foreach ($code->files as $files)
+                                            <li>
+                                                <a href='{{Storage::url($files->file_path)}}' target="_blank" download>Download File</a>
+                                            </li>
+                                        @endforeach
+                                    @endif
+                                        
                                     @endisset
                                     @isset($code->external_link)
                                         <li>
@@ -149,6 +154,7 @@
                                 </ul>
                             </small>
                         </p>
+                        @endisset
                        
 
                     </div>

@@ -12,6 +12,6 @@ class CodeController extends Controller
     {
         $encryptedCodeId = Crypt::encryptString($code->id);
         $form=PublicForm::where('code_id',$code->id)->get()->first();
-        return view('public.form', ['code' => $code,'encryptedCodeId'=>$encryptedCodeId,'form'=>($form)?$form:[]]);
+        return view('public.form', ['code' => $code::with('files')->findOrFail($code->id),'encryptedCodeId'=>$encryptedCodeId,'form'=>($form)?$form:[]]);
     }
 }
