@@ -137,7 +137,7 @@
                             <small>
                                 <ul>
                                     @isset($code->files)
-                                    @if (!empty($code->files))
+                                    @if ($code->files->count() !== 0)
                                         @foreach ($code->files as $files)
                                             <li>
                                                 <a href='{{Storage::url($files->file_path)}}' target="_blank" download>Download File</a>
@@ -154,6 +154,14 @@
                                 </ul>
                             </small>
                         </p>
+                        @else
+                            @if ($code->files->count() !== 0 || isset($code->external_link))
+                                <p class="text-center">
+                                    <small>
+                                        Laporan/Serifikat/Hasil Pengujuan/Kalibrasi/Studi dapat diunduh setelah pengisian survei.
+                                    </small>
+                                </p>
+                            @endif
                         @endisset
                        
 
@@ -299,7 +307,7 @@
 
                         <div class="vr"></div>
                         <!-- Korupsi -->
-                        <h2>Korupsi</h2>
+                        <h2>Persepsi Korupsi</h2>
                         @for($i = 1; $i <= 9; $i++)
                             <div class="mb-3 p-2">
                                 @php

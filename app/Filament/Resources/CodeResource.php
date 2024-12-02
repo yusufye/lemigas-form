@@ -70,7 +70,8 @@ class CodeResource extends Resource
                     'application/vnd.openxmlformats-officedocument.wordprocessingml.document', // DOCX
                     'image/png',                // PNG
                     'image/jpeg',               // JPG, JPEG
-                    'application/zip',          // ZIP
+                    'application/zip',          // ZIP,
+                    'application/x-zip-compressed',
                     'application/x-rar-compressed', // RAR
                 ])
                 ->maxSize(10240)
@@ -79,6 +80,8 @@ class CodeResource extends Resource
                 ->disk('public') // Menyimpan di disk 'public'
                 ->directory('uploads/code') // Folder di storage
                 ->label('Upload File')
+                ->enableOpen()
+                ->enableDownload()
                 ->disabled(fn ($record) => $record !== null && $record->publicForm && $record->publicForm->submitted_at)
                 ->saveRelationshipsUsing(function ($component, $state, $record) {
                     $record->files->each(function ($file) {
@@ -98,12 +101,14 @@ class CodeResource extends Resource
                     // Ambil file path dari relasi dan masukkan ke state
                     if ($record) {
                         $component->state($record->files->pluck('file_path')->toArray());
+
                     }
                 }),
                 Textarea::make('external_link')
                 ->rule('regex:/^https:\/\/.+$/i') // Validasi harus diawali dengan "https://"
                 ->placeholder('https://example.com')
-                ->helperText('URL harus diawali dengan https://'),
+                ->helperText('URL harus diawali dengan https://')
+                ->disabled(fn ($record) => $record !== null && $record->publicForm && $record->publicForm->submitted_at)
             ])
             ->columns(2);
     }
