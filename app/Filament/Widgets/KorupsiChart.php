@@ -15,7 +15,7 @@ class KorupsiChart extends ChartWidget
 {
     use InteractsWithPageFilters;
 
-    protected static ?string $heading = 'Korupsi';
+    protected static ?string $heading = 'Persepsi Korupsi';
 
     protected function getData(): array
     {

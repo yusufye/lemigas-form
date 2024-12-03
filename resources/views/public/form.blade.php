@@ -132,6 +132,37 @@
                         <p class="text-end font-monospace fs-6">
                             <small>{{(isset($form['submitted_at']) ?'Submitted at: '.date('d M Y H:i:s',strtotime($form['submitted_at'])) : '')}}</small>
                         </p>
+                        @isset($form['submitted_at'])
+                        <p>
+                            <small>
+                                <ul>
+                                    @isset($code->files)
+                                    @if ($code->files->count() !== 0)
+                                        @foreach ($code->files as $files)
+                                            <li>
+                                                <a href='{{Storage::url($files->file_path)}}' target="_blank" download>Unduh File</a>
+                                            </li>
+                                        @endforeach
+                                    @endif
+                                        
+                                    @endisset
+                                    @isset($code->external_link)
+                                        <li>
+                                            <a href="{{$code->external_link}}" target="_blank">Open Link</a>
+                                        </li>
+                                    @endisset
+                                </ul>
+                            </small>
+                        </p>
+                        @else
+                            @if ($code->files->count() !== 0 || isset($code->external_link))
+                                <p class="text-center">
+                                    <small>
+                                        Laporan/Serifikat/Hasil Pengujuan/Kalibrasi/Studi dapat diunduh setelah pengisian survei.
+                                    </small>
+                                </p>
+                            @endif
+                        @endisset
                        
 
                     </div>
@@ -276,7 +307,7 @@
 
                         <div class="vr"></div>
                         <!-- Korupsi -->
-                        <h2>Korupsi</h2>
+                        <h2>Persepsi Korupsi</h2>
                         @for($i = 1; $i <= 9; $i++)
                             <div class="mb-3 p-2">
                                 @php

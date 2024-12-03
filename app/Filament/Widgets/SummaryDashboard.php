@@ -31,7 +31,8 @@ class SummaryDashboard extends Widget
             })
             ->selectRaw('
                 u.name as user_name,
-                IFNULL(COUNT(p.code_id),0) as total_codes,
+                IFNULL(COUNT(c.id),0) as total_code,
+                IFNULL(COUNT(p.code_id),0) as total_responden,
                 IFNULL(AVG(kepuasan_1),0) AS kepuasan_1,
                 IFNULL(AVG(kepuasan_2),0) AS kepuasan_2,
                 IFNULL(AVG(kepuasan_3),0) AS kepuasan_3,
@@ -65,15 +66,35 @@ class SummaryDashboard extends Widget
 
             $row=$data->map(function ($user) {
                 return [
-                    'user_name' => $user->user_name,
-                    'total_codes' => $user->total_codes,
-                    'avg_kepuasan' => collect($user->kepuasan_1,$user->kepuasan_2,$user->kepuasan_3,$user->kepuasan_4,$user->kepuasan_5,$user->kepuasan_6,$user->kepuasan_7,$user->kepuasan_8,$user->kepuasan_9)->avg(),
+                    'user_name'       => $user->user_name,
+                    'total_code'      => $user->total_code,
+                    'total_responden' => $user->total_responden,
+                    'avg_kepuasan'    => collect($user->kepuasan_1,$user->kepuasan_2,$user->kepuasan_3,$user->kepuasan_4,$user->kepuasan_5,$user->kepuasan_6,$user->kepuasan_7,$user->kepuasan_8,$user->kepuasan_9)->avg(),
                     'avg_kepentingan' => collect($user->kepentingan_1,$user->kepentingan_2,$user->kepentingan_3,$user->kepentingan_4,$user->kepentingan_5,$user->kepentingan_6,$user->kepentingan_7,$user->kepentingan_8,$user->kepentingan_9)->avg(),
-                    'avg_korupsi' => collect($user->korupsi_1,$user->korupsi_2,$user->korupsi_3,$user->korupsi_4,$user->korupsi_5,$user->korupsi_6,$user->korupsi_7,$user->korupsi_8,$user->korupsi_9)->avg()
+                    'avg_korupsi'     => collect($user->korupsi_1,$user->korupsi_2,$user->korupsi_3,$user->korupsi_4,$user->korupsi_5,$user->korupsi_6,$user->korupsi_7,$user->korupsi_8,$user->korupsi_9)->avg()
                 ];
             });
 
-            $total_avg_kepuasan = $data->map(function ($publicForm) {
+            $publicForms = PublicForm::with('code')
+                ->whereHas('code', function($query) {
+                    $query->where('is_active', 1);
+                })
+                ->whereNotNull('submitted_at')
+                ->when($startDate, fn (Builder $query) => $query->whereDate('submitted_at', '>=', $startDate))
+                ->when($endDate, fn (Builder $query) => $query->whereDate('submitted_at', '<=', $endDate))
+                ->get([
+                    'kepuasan_1', 'kepuasan_2', 'kepuasan_3', 
+                    'kepuasan_4', 'kepuasan_5', 'kepuasan_6', 
+                    'kepuasan_7', 'kepuasan_8', 'kepuasan_9',
+                    'kepentingan_1', 'kepentingan_2', 'kepentingan_3', 
+                    'kepentingan_4', 'kepentingan_5', 'kepentingan_6', 
+                    'kepentingan_7', 'kepentingan_8', 'kepentingan_9',
+                    'korupsi_1', 'korupsi_2', 'korupsi_3', 
+                    'korupsi_4', 'korupsi_5', 'korupsi_6', 
+                    'korupsi_7', 'korupsi_8', 'korupsi_9'
+                ]);
+                
+            $total_avg_kepuasan = $publicForms->map(function ($publicForm) {
                 $values = collect([
                     $publicForm->kepuasan_1,
                     $publicForm->kepuasan_2,
@@ -89,7 +110,7 @@ class SummaryDashboard extends Widget
                 return $values->avg();
             });
 
-            $total_avg_kepentingan = $data->map(function ($publicForm) {
+            $total_avg_kepentingan = $publicForms->map(function ($publicForm) {
                 $values = collect([
                     $publicForm->kepentingan_1,
                     $publicForm->kepentingan_2,
@@ -105,7 +126,7 @@ class SummaryDashboard extends Widget
                 return $values->avg();
             });
 
-            $total_avg_korupsi = $data->map(function ($publicForm) {
+            $total_avg_korupsi = $publicForms->map(function ($publicForm) {
                 $values = collect([
                     $publicForm->korupsi_1,
                     $publicForm->korupsi_2,
@@ -123,10 +144,12 @@ class SummaryDashboard extends Widget
        
         
         $return = [
-            'data'=>$row->toArray(),
-            'total_kepuasan'=>$total_avg_kepuasan->avg(),
-            'total_kepentingan'=>$total_avg_kepentingan->avg(),
-            'total_korupsi'=>$total_avg_korupsi->avg()
+            'data'                  => $row->toArray(),
+            'sum_total_code'        => $row->sum('total_code'),
+            'sum_total_responden'   => $row->sum('total_responden'),
+            'avg_total_kepuasan'    => $total_avg_kepuasan->avg(),
+            'avg_total_kepentingan' => $total_avg_kepentingan->avg(),
+            'avg_total_korupsi'     => $total_avg_korupsi->avg()
         ];
 
         return $return;

@@ -116,7 +116,7 @@ class ListCodes extends ListRecords
                     ->withFilename(fn ($resource) =>  'form_kepuasan_' . date('dMY_His'))
                     // ->withWriterType(\Maatwebsite\Excel\Excel::CSV)
                     ->withColumns($data_kepuasan),
-                ExcelExport::make('Korupsi')
+                ExcelExport::make('Persepsi Korupsi')
                     ->fromTable()
                     ->except([ 'is_active', 'user'])
                     ->modifyQueryUsing(fn ($query) => $query->where('is_active', true)
