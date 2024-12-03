@@ -75,7 +75,26 @@ class SummaryDashboard extends Widget
                 ];
             });
 
-            $total_avg_kepuasan = $data->map(function ($publicForm) {
+            $publicForms = PublicForm::with('code')
+                ->whereHas('code', function($query) {
+                    $query->where('is_active', 1);
+                })
+                ->whereNotNull('submitted_at')
+                ->when($startDate, fn (Builder $query) => $query->whereDate('submitted_at', '>=', $startDate))
+                ->when($endDate, fn (Builder $query) => $query->whereDate('submitted_at', '<=', $endDate))
+                ->get([
+                    'kepuasan_1', 'kepuasan_2', 'kepuasan_3', 
+                    'kepuasan_4', 'kepuasan_5', 'kepuasan_6', 
+                    'kepuasan_7', 'kepuasan_8', 'kepuasan_9',
+                    'kepentingan_1', 'kepentingan_2', 'kepentingan_3', 
+                    'kepentingan_4', 'kepentingan_5', 'kepentingan_6', 
+                    'kepentingan_7', 'kepentingan_8', 'kepentingan_9',
+                    'korupsi_1', 'korupsi_2', 'korupsi_3', 
+                    'korupsi_4', 'korupsi_5', 'korupsi_6', 
+                    'korupsi_7', 'korupsi_8', 'korupsi_9'
+                ]);
+                
+            $total_avg_kepuasan = $publicForms->map(function ($publicForm) {
                 $values = collect([
                     $publicForm->kepuasan_1,
                     $publicForm->kepuasan_2,
@@ -91,7 +110,7 @@ class SummaryDashboard extends Widget
                 return $values->avg();
             });
 
-            $total_avg_kepentingan = $data->map(function ($publicForm) {
+            $total_avg_kepentingan = $publicForms->map(function ($publicForm) {
                 $values = collect([
                     $publicForm->kepentingan_1,
                     $publicForm->kepentingan_2,
@@ -107,7 +126,7 @@ class SummaryDashboard extends Widget
                 return $values->avg();
             });
 
-            $total_avg_korupsi = $data->map(function ($publicForm) {
+            $total_avg_korupsi = $publicForms->map(function ($publicForm) {
                 $values = collect([
                     $publicForm->korupsi_1,
                     $publicForm->korupsi_2,

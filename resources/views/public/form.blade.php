@@ -140,7 +140,7 @@
                                     @if ($code->files->count() !== 0)
                                         @foreach ($code->files as $files)
                                             <li>
-                                                <a href='{{Storage::url($files->file_path)}}' target="_blank" download>Download File</a>
+                                                <a href='{{Storage::url($files->file_path)}}' target="_blank" download>Unduh File</a>
                                             </li>
                                         @endforeach
                                     @endif
