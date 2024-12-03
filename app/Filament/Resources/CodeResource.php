@@ -128,7 +128,15 @@ class CodeResource extends Resource
                 ->copyable()
                 ->copyableState(fn (Code $record) => url('public/'.Crypt::encryptString($record->id)))->copyMessage('Link Copied'),
                 //->copyableState(fn (Code $record) => Crypt::encryptString($record->id))->copyMessage('Encrypted ID Copied'),
-
+                IconColumn::make('external_link')
+                ->label('Files')
+                ->options([
+                    'heroicon-o-paper-clip' => fn ($record): bool => 
+                        ($record->codeFiles && $record->codeFiles->isNotEmpty()) || !empty($record->external_link),
+                ])
+                ->color('success')
+                ->sortable()
+                ,
                 TextColumn::make('user_created.name')
                 ->label('User')
                 ->sortable()
