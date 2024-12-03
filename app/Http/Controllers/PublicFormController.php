@@ -38,7 +38,7 @@ class PublicFormController extends Controller
             
             // try {
             $code=Code::all()->find($decryptedCodeId);
-            
+
             $data['code_id']             = $decryptedCodeId;
             $data['submitted_at']        = date('Y-m-d H:i:s');
             $data['company_name']        = $request->company_name;
@@ -76,8 +76,6 @@ class PublicFormController extends Controller
             
             // dd($data);
             $publicForm=PublicForm::create($data);
-
-            $form=PublicForm::where('code_id',$code->id)->get()->first();
     
 
             // return redirect()->route('public-form', [
@@ -86,7 +84,8 @@ class PublicFormController extends Controller
             //     'form'=>($form)?$form:[]])->with('success', 'Form has been submitted successfully.');
     
             return view('public/success', [
-                'encryptedCodeId' => $encryptedCodeId
+                'encryptedCodeId'   => $encryptedCodeId,
+                'code'              =>$code
             ]);
 
             

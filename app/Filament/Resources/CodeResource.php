@@ -6,6 +6,7 @@ use Filament\Forms;
 use App\Models\Code;
 use App\Models\User;
 use Filament\Tables;
+use App\Models\CodeFile;
 use Filament\Forms\Form;
 use Filament\Tables\Table;
 use Illuminate\Support\Carbon;
@@ -15,17 +16,21 @@ use Filament\Resources\Resource;
 use Filament\Tables\Filters\Filter;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\Crypt;
+use Filament\Forms\Components\Textarea;
 use Filament\Tables\Actions\ViewAction;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Columns\ViewColumn;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\Rules\Unique;
 use Filament\Forms\Components\TextInput;
 use Filament\Tables\Columns\BadgeColumn;
 use Filament\Tables\Enums\FiltersLayout;
+use Filament\Forms\Components\FileUpload;
 use Filament\Tables\Columns\ToggleColumn;
 use Filament\Tables\Filters\SelectFilter;
 use Illuminate\Database\Eloquent\Builder;
+use Filament\Infolists\Components\TextEntry;
 use Filament\Infolists\Components\ViewEntry;
 use App\Filament\Resources\CodeResource\Pages;
 use Filament\Tables\Columns\Summarizers\Range;
@@ -50,8 +55,62 @@ class CodeResource extends Resource
             ->schema([
                 TextInput::make('code')->required()->unique(modifyRuleUsing: function (Unique $rule) {
                     return $rule->where('created_by',auth()->id());
-                })->numeric()->rules(['digits_between:1,15'])
-            ]);
+                },ignoreRecord: true)->numeric()
+                ->rules(['digits_between:1,15'])
+                ->columnSpan(2)
+                ->disabled(fn ($record) => $record !== null) // Menonaktifkan input jika ada record (edit mode)
+                ->reactive(),
+                FileUpload::make('files')
+                ->acceptedFileTypes([
+                    'application/pdf',          // PDF
+                    'text/csv',                 // CSV
+                    'application/vnd.ms-excel', // XLS
+                    'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', // XLSX
+                    'application/msword',       // DOC
+                    'application/vnd.openxmlformats-officedocument.wordprocessingml.document', // DOCX
+                    'image/png',                // PNG
+                    'image/jpeg',               // JPG, JPEG
+                    'application/zip',          // ZIP,
+                    'application/x-zip-compressed',
+                    'application/x-rar-compressed', // RAR
+                ])
+                ->maxSize(10240)
+                ->multiple()
+                ->maxFiles(5) // Maksimal jumlah file
+                ->disk('public') // Menyimpan di disk 'public'
+                ->directory('uploads/code') // Folder di storage
+                ->label('Upload File')
+                ->enableOpen()
+                ->enableDownload()
+                ->disabled(fn ($record) => $record !== null && $record->publicForm && $record->publicForm->submitted_at)
+                ->saveRelationshipsUsing(function ($component, $state, $record) {
+                    $record->files->each(function ($file) {
+                        if (Storage::disk('public')->exists($file->file_path)) {
+                            Storage::disk('public')->delete($file->file_path);  // Menghapus file secara fisik
+                        }
+                        $file->delete(); // Hapus record
+                    });
+
+                    foreach ($state as $filePath) {
+                        $record->files()->create([
+                            'file_path' => $filePath,
+                        ]);
+                    }
+                })
+                ->afterStateHydrated(function (FileUpload $component, $state, $record) {
+                    // Ambil file path dari relasi dan masukkan ke state
+                    if ($record) {
+                        $component->state($record->files->pluck('file_path')->toArray());
+
+                    }
+                }),
+                Textarea::make('external_link')
+                ->rule('regex:/^https:\/\/.+$/i') // Validasi harus diawali dengan "https://"
+                ->placeholder('https://example.com')
+                ->helperText('URL harus diawali dengan https://')
+                ->disabled(fn ($record) => $record !== null && $record->publicForm && $record->publicForm->submitted_at)
+            ])
+            ->columns(2);
     }
 
     public static function table(Table $table): Table
@@ -69,7 +128,15 @@ class CodeResource extends Resource
                 ->copyable()
                 ->copyableState(fn (Code $record) => url('public/'.Crypt::encryptString($record->id)))->copyMessage('Link Copied'),
                 //->copyableState(fn (Code $record) => Crypt::encryptString($record->id))->copyMessage('Encrypted ID Copied'),
-
+                IconColumn::make('external_link')
+                ->label('Files')
+                ->options([
+                    'heroicon-o-paper-clip' => fn ($record): bool => 
+                        ($record->codeFiles && $record->codeFiles->isNotEmpty()) || !empty($record->external_link),
+                ])
+                ->color('success')
+                ->sortable()
+                ,
                 TextColumn::make('user_created.name')
                 ->label('User')
                 ->sortable()
@@ -101,7 +168,29 @@ class CodeResource extends Resource
                             $query->whereBetween('submitted_at', [$startDate, $endDate]);
                         });
                     });
-                })
+                }),
+                SelectFilter::make('submitted_at')
+                ->options([
+                    'submitted' => 'Submitted',
+                    'unsubmitted' => 'Unsubmitted',
+                ])
+                ->label('Submit Status')
+                ->query(
+                    fn (array $data, Builder $query): Builder =>
+                    $query->when(
+                        $data['value'],
+                        function (Builder $query) use ($data) {
+                            if ($data['value'] === 'submitted') {
+                                $query->whereHas('publicForm', function (Builder $query) {
+                                    $query->whereNotNull('submitted_at');
+                                });
+                            } elseif ($data['value'] === 'unsubmitted') {
+                                $query->whereDoesntHave('publicForm', function (Builder $query) {
+                                });
+                            }
+                        }
+                    )
+                )
 
             ],layout: FiltersLayout::AboveContentCollapsible)
             ->actions([
@@ -168,5 +257,8 @@ class CodeResource extends Resource
         // Pastikan untuk memuat relasi 'publicForm'
         return Code::query()->with('publicForm');
     }
+
+    
+
     
 }

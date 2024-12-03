@@ -27,6 +27,37 @@
             color: red;
             margin-left: 5px;
         }
+        .rating {
+        display: inline-block;
+        position: relative;
+        }
+
+        .rating input {
+        display: none; /* Sembunyikan radio input */
+        }
+
+        .rating label {
+        font-size: 2rem; /* Ukuran bintang */
+        color: lightgray; /* Warna default bintang */
+        cursor: pointer;
+        transition: color 0.2s;
+        }
+
+        .rating label:hover,
+        .rating label:hover ~ label {
+        color: gold; /* Warna bintang saat di-hover */
+        }
+
+        .rating input:checked ~ label {
+        color: lightgray; /* Reset warna bintang setelah dipilih */
+        }
+
+        .rating input:checked + label,
+        .rating input:checked + label ~ label {
+        color: gold; /* Warna bintang yang dipilih dan sebelumnya */
+        }
+
+
     </style>
     
 </head>
@@ -101,6 +132,37 @@
                         <p class="text-end font-monospace fs-6">
                             <small>{{(isset($form['submitted_at']) ?'Submitted at: '.date('d M Y H:i:s',strtotime($form['submitted_at'])) : '')}}</small>
                         </p>
+                        @isset($form['submitted_at'])
+                        <p>
+                            <small>
+                                <ul>
+                                    @isset($code->files)
+                                    @if ($code->files->count() !== 0)
+                                        @foreach ($code->files as $files)
+                                            <li>
+                                                <a href='{{Storage::url($files->file_path)}}' target="_blank" download>Unduh File</a>
+                                            </li>
+                                        @endforeach
+                                    @endif
+                                        
+                                    @endisset
+                                    @isset($code->external_link)
+                                        <li>
+                                            <a href="{{$code->external_link}}" target="_blank">Open Link</a>
+                                        </li>
+                                    @endisset
+                                </ul>
+                            </small>
+                        </p>
+                        @else
+                            @if ($code->files->count() !== 0 || isset($code->external_link))
+                                <p class="text-center">
+                                    <small>
+                                        Laporan/Serifikat/Hasil Pengujuan/Kalibrasi/Studi dapat diunduh setelah pengisian survei.
+                                    </small>
+                                </p>
+                            @endif
+                        @endisset
                        
 
                     </div>
@@ -202,9 +264,10 @@
                                         // Mendapatkan nilai kepentingan dari array mapping
                                         $label_radio_kepentingan = $radio_label_kepentingan[$j];
                                     @endphp
-                                    <div class="form-check form-check-inline">
-                                        <input class="form-check-input" type="radio" id="kepentingan_{{ $i }}_{{ $j }}" name="kepentingan_{{ $i }}" value="{{ $j }}" {{ old("kepentingan_{$i}") == $j ? 'checked' : (isset($form["kepentingan_{$i}"]) ? ($form["kepentingan_{$i}"]==$j?'checked':'') : '') }} required>
-                                        <label class="form-check-label" for="kepentingan_{{ $i }}_{{ $j }}">{{ $label_radio_kepentingan }}</label>
+                                    <div class="form-check form-check-inline rating">
+                                        <input class="form-check-input" type="radio" id="kepentingan_{{ $i }}_{{ $j }}" name="kepentingan_{{ $i }}" value="{{ $j }}" {{ old("kepentingan_{$i}") == $j ? 'checked' : (isset($form["kepentingan_{$i}"]) ? ($form["kepentingan_{$i}"]==$j?'checked':'') : ($j==4?'checked':'')) }} required>
+                                        {{-- <label class="form-check-label" for="kepentingan_{{ $i }}_{{ $j }}">{{ $label_radio_kepentingan }}</label> --}}
+                                        <label class="form-check-label" for="kepentingan_{{ $i }}_{{ $j }}">&#9734;</label>
                                     </div>
                                 @endfor
                                 @error("kepentingan_{$i}")
@@ -230,9 +293,10 @@
                                         // Mendapatkan nilai kepentingan dari array mapping
                                         $label_radio_kepuasan = $radio_label[$j];
                                     @endphp
-                                    <div class="form-check form-check-inline">
-                                        <input class="form-check-input" type="radio" id="kepuasan_{{ $i }}_{{ $j }}" name="kepuasan_{{ $i }}" value="{{ $j }}" {{ old("kepuasan_{$i}") == $j ? 'checked' : (isset($form["kepuasan_{$i}"]) ? ($form["kepuasan_{$i}"]==$j?'checked':'') : '') }} required>
-                                        <label class="form-check-label" for="kepuasan_{{ $i }}_{{ $j }}">{{ $label_radio_kepuasan }}</label>
+                                    <div class="form-check form-check-inline rating">
+                                        <input class="form-check-input" type="radio" id="kepuasan_{{ $i }}_{{ $j }}" name="kepuasan_{{ $i }}" value="{{ $j }}" {{ old("kepuasan_{$i}") == $j ? 'checked' : (isset($form["kepuasan_{$i}"]) ? ($form["kepuasan_{$i}"]==$j?'checked':'') : ($j==4?'checked':'')) }} required>
+                                        {{-- <label class="form-check-label" for="kepuasan_{{ $i }}_{{ $j }}">{{ $label_radio_kepuasan }}</label> --}}
+                                        <label class="form-check-label" for="kepuasan_{{ $i }}_{{ $j }}">&#9734;</label>
                                     </div>
                                 @endfor
                                 @error("kepuasan_{$i}")
@@ -243,7 +307,7 @@
 
                         <div class="vr"></div>
                         <!-- Korupsi -->
-                        <h2>Korupsi</h2>
+                        <h2>Persepsi Korupsi</h2>
                         @for($i = 1; $i <= 9; $i++)
                             <div class="mb-3 p-2">
                                 @php
@@ -256,9 +320,10 @@
                                         // Mendapatkan nilai kepentingan dari array mapping
                                         $label_radio_korupsi = $radio_label_korupsi[$j];
                                     @endphp
-                                    <div class="form-check form-check-inline">
-                                        <input class="form-check-input" type="radio" id="korupsi_{{ $i }}_{{ $j }}" name="korupsi_{{ $i }}" value="{{ $j }}" {{ old("korupsi_{$i}") == $j ? 'checked' : (isset($form["korupsi_{$i}"]) ? ($form["korupsi_{$i}"]==$j?'checked':'') : '') }} required>
-                                        <label class="form-check-label" for="korupsi_{{ $i }}_{{ $j }}">{{ $label_radio_korupsi }}</label>
+                                    <div class="form-check form-check-inline rating">
+                                        <input class="form-check-input" type="radio" id="korupsi_{{ $i }}_{{ $j }}" name="korupsi_{{ $i }}" value="{{ $j }}" {{ old("korupsi_{$i}") == $j ? 'checked' : (isset($form["korupsi_{$i}"]) ? ($form["korupsi_{$i}"]==$j?'checked':'') : ($j==4?'checked':'')) }} required>
+                                        {{-- <label class="form-check-label" for="korupsi_{{ $i }}_{{ $j }}">{{ $label_radio_korupsi }}</label> --}}
+                                        <label class="form-check-label" for="korupsi_{{ $i }}_{{ $j }}">&#9734;</label>
                                     </div>
                                 @endfor
                                 @error("korupsi_{$i}")
@@ -378,6 +443,69 @@
             }
 
         });
+
+ // Fungsi untuk memberi rating default sesuai dengan radio yang sudah "checked"
+function setDefaultRating() {
+  document.querySelectorAll('.rating input:checked').forEach((radio) => {
+    const name = radio.name; // Dapatkan nama grup input
+    const selectedValue = parseInt(radio.value); // Nilai checked pada grup
+
+    // Perbarui semua label pada grup terkait
+    document.querySelectorAll(`input[name="${name}"]`).forEach((input) => {
+      const label = input.nextElementSibling; // Label terkait
+      const inputValue = parseInt(input.value);
+
+      if (inputValue <= selectedValue) {
+        // Warnai bintang hingga nilai checked
+        label.textContent = '★';
+        label.style.color = 'gold';
+      } else {
+        // Reset warna bintang setelah nilai checked
+        label.textContent = '★';
+        label.style.color = 'lightgray';
+      }
+    });
+  });
+}
+
+// Fungsi untuk menangani perubahan rating
+function handleRatingChange() {
+  document.querySelectorAll('.rating input').forEach((radio) => {
+    radio.addEventListener('change', (event) => {
+      const name = event.target.name; // Dapatkan nama grup input
+      const selectedValue = parseInt(event.target.value); // Nilai yang dipilih
+
+      // Perbarui semua label pada grup terkait
+      document.querySelectorAll(`input[name="${name}"]`).forEach((input) => {
+        const label = input.nextElementSibling; // Label terkait
+        const inputValue = parseInt(input.value);
+
+        if (inputValue <= selectedValue) {
+          // Warnai bintang hingga nilai yang dipilih
+          label.textContent = '★';
+          label.style.color = 'gold';
+        } else {
+          // Reset warna bintang setelah nilai yang dipilih
+          label.textContent = '★';
+          label.style.color = 'lightgray';
+        }
+      });
+
+      console.log(`Rating selected for ${name}: ${selectedValue}`);
+    });
+  });
+}
+
+// Inisialisasi saat halaman dimuat
+document.addEventListener('DOMContentLoaded', () => {
+  setDefaultRating(); // Atur rating default berdasarkan "checked"
+  handleRatingChange(); // Tambahkan event listener untuk perubahan rating
+});
+
+
+
+
+
 
 
     </script>
