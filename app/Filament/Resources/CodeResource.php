@@ -6,6 +6,7 @@ use Filament\Forms;
 use App\Models\Code;
 use App\Models\User;
 use Filament\Tables;
+use App\Models\Setting;
 use App\Models\CodeFile;
 use Filament\Forms\Form;
 use Filament\Tables\Table;
@@ -74,9 +75,15 @@ class CodeResource extends Resource
                     'application/x-zip-compressed',
                     'application/x-rar-compressed', // RAR
                 ])
-                ->maxSize(10240)
+                ->maxSize(function () {
+                    // Ambil nilai max_size dari tabel settings (dalam satuan KB)
+                    return Setting::where('key', 'code_max_size_upload')->value('value') ?? 10240; // Default 10240 KB jika tidak ada nilai
+                })
+                ->maxFiles(function () {
+                    // Ambil nilai max_file dari tabel settings
+                    return Setting::where('key', 'code_max_file_upload')->value('value') ?? 5; // Default 5 jika tidak ada nilai
+                })
                 ->multiple()
-                ->maxFiles(5) // Maksimal jumlah file
                 ->disk('public') // Menyimpan di disk 'public'
                 ->directory('uploads/code') // Folder di storage
                 ->label('Upload File')

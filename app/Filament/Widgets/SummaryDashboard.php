@@ -2,12 +2,13 @@
 
 namespace App\Filament\Widgets;
 
+use App\Models\Setting;
 use App\Models\PublicForm;
 use Filament\Widgets\Widget;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Eloquent\Builder;
-use Filament\Widgets\Concerns\InteractsWithPageFilters;
 use Filament\Tables\View\TablesRenderHook;
+use Filament\Widgets\Concerns\InteractsWithPageFilters;
 
 
 
@@ -23,7 +24,11 @@ class SummaryDashboard extends Widget
         $endDate = $this->filters['endDate'] ?? null;
         
         $data = DB::table('users as u')
-            ->leftJoin('codes as c', 'c.created_by', '=', 'u.id')
+            // ->leftJoin('codes as c', 'c.created_by', '=', 'u.id')
+            ->leftJoin('codes as c', function($join){
+                $join->on('c.created_by', '=', 'u.id');
+                $join->on('c.is_active', '=', DB::raw("1"));
+            })
             ->leftJoin('public_forms as p', function($join) use ($startDate,$endDate){
                 $join->on('p.code_id', '=', 'c.id');
                 $join->when($startDate, fn ($query) => $query->on('submitted_at', '>=',DB::raw("'{$startDate}'")));
@@ -142,9 +147,11 @@ class SummaryDashboard extends Widget
                 return $values->avg();
             });
        
+        $threshold = Setting::where('key', 'target_skm')->value('value');
         
         $return = [
             'data'                  => $row->toArray(),
+            'threshold'             => $threshold,
             'sum_total_code'        => $row->sum('total_code'),
             'sum_total_responden'   => $row->sum('total_responden'),
             'avg_total_kepuasan'    => $total_avg_kepuasan->avg(),
